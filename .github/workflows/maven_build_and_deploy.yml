@@ -3,87 +3,51 @@ name: Build and Deploy Pipeline
 on:
   push:
     branches:
-      - master
+      - dockerstage
 
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
 
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
-        with:
-         java-version: 1.8
-
-
-      - name: Compile Java Source Code
-        run: mvn -f /home/runner/work/maven-hello-world/maven-hello-world/myapp/pom.xml compile
-
-
-      - name: Run Tests
-        run: mvn -f /home/runner/work/maven-hello-world/maven-hello-world/myapp/pom.xml test -Dtest=com.myapp.AppTest
-
-      - name: Package Artifact
-        run: mvn clean package
+      - name: Build and Push Docker Image
+        run: |
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "${VERSION}"
+          docker build -t kupidun/java-app:${VERSION} --build-arg VERSION=${VERSION} .
+          echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+          docker image tag kupidun/java-app:$VERSION kupidun/java-app:latest
+          docker image tag kupidun/java-app:$VERSION kupidun/java-app:$VERSION
+          docker image push kupidun/java-app:$VERSION
+          docker image push kupidun/java-app:latest
         working-directory: ./myapp
+        env:
+          NEW_VERSION: ${{ env.NEW_VERSION }}
 
 
-      - name: Increment Patch Version
+      - name: Increment Patch Version and Commit
         run: |
           chmod +x versionScript.sh
           ./versionScript.sh
           echo "NEW_VERSION=$(./versionScript.sh)"
-          ls
-        working-directory: ./myapp
-
-      - name: Commit and Push Version Bump
-        run: |
           git config --global user.name "${{ secrets.GIT_USER }}"
           git config --global user.email "${{ secrets.EMAIL }}"
           git add pom.xml
           git commit -m "Bump version [skip ci]"
           git push
         working-directory: ./myapp
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/dockerstage'
 
-
-      - name: Build Docker Image
-        run: |
-          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          echo "${VERSION}"
-          docker build -t kupidun/java-app:${VERSION} --build-arg VERSION=${VERSION} .
-        working-directory: ./myapp
-
-
-      - name: Login to Docker Hub
-        run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
-
-      - name: List Docker Images
-        run: docker images
-
-      - name: Extract Version and Build/Push Docker Image
-        run: |
-          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          echo "Version extracted: $VERSION"
-          docker image tag kupidun/java-app:$VERSION kupidun/java-app:latest
-          docker image tag kupidun/java-app:$VERSION kupidun/java-app:$VERSION
-          docker image push kupidun/java-app:$VERSION
-          docker image push kupidun/java-app:latest
-        working-directory: ./myapp
-
-
-      - name: Pull Docker Image
-        run: docker pull kupidun/java-app:latest
 
 
       - name: Run Docker Container for Testing
         run: |
+          docker pull kupidun/java-app:latest
           CONTAINER_ID=$(docker run --name test_container -d -p 8080:8080 kupidun/java-app:latest)
-          echo "Container ID: $CONTAINER_ID"
+          sleep 10 # Give some time for the application to start
           docker logs $CONTAINER_ID
-          docker stop test_container
-          docker rm test_container
+          docker stop $CONTAINER_ID
+          docker rm $CONTAINER_ID
