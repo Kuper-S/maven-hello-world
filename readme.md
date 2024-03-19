@@ -56,5 +56,3 @@ Steps:
 - Pull Docker Image Stage: Pulls the image for testing.
 - Run Docker Container for Testing Stage: Tests the running container to ensure the app is running on the continer.
 
-
-```
