@@ -3,7 +3,7 @@ name: Build and Deploy Pipeline
 on:
   push:
     branches:
-      - dockerstage
+      - master
 
 jobs:
   build_and_deploy:
@@ -39,7 +39,7 @@ jobs:
           git commit -m "Bump version [skip ci]"
           git push
         working-directory: ./myapp
-        if: github.ref == 'refs/heads/dockerstage'
+        if: github.ref == 'refs/heads/master'
 
 
 
