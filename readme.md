@@ -3,7 +3,7 @@
 
 
 
-# Descreption 
+# Description 
 This repository contains the source code of a simple Java application, along with a GitHub Actions workflow that automates the process of building, testing
 Organization. Ansible Roles provide a structured way to organize tasks, templates, files, and variables. This structure makes it easier to manage complex automation setups, as everything related to a specific role is contained within its directory, packaging, and Publishing this application image.
 This is an overview of this CI/CD pipeline, including the technologies used, GitHub secrets configuration, and a breakdown of each step in the pipeline.
