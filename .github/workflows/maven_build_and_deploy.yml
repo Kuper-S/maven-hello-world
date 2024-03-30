@@ -26,3 +26,4 @@ jobs:
           docker push kupidun/java-app:$VERSION
           docker tag kupidun/java-app:$VERSION kupidun/java-app:latest
           docker push kupidun/java-app:latest
+        working-directory: ./myapp
