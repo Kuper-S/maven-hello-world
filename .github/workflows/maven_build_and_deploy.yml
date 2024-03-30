@@ -3,42 +3,26 @@ name: Build and Deploy Pipeline
 on:
   push:
     branches:
-      - master
+      - fix
 
 jobs:
-  build_and_deploy:
+  docker_build_and_push:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
+      - uses: actions/checkout@v2
 
       - name: Build and Push Docker Image
         run: |
+          # Extract version information from pom.xml
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          echo "${VERSION}"
-          docker build -t kupidun/java-app:${VERSION} --build-arg VERSION=${VERSION} .
+          
+          # Build Docker image with tag based on Maven project version
+          docker build -t kupidun/java-app:$VERSION .
+          
+          # Login to DockerHub
           echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
-          docker image tag kupidun/java-app:$VERSION kupidun/java-app:latest
-          docker image push kupidun/java-app:$VERSION
-          docker image push kupidun/java-app:latest
-        working-directory: ./myapp
-        env:
-          NEW_VERSION: ${{ env.NEW_VERSION }}
-
-
-      - name: Increment Patch Version and Commit
-        run: |
-          chmod +x versionScript.sh
-          ./versionScript.sh
-          echo "NEW_VERSION=$(./versionScript.sh)"
-          git config --global user.name "${{ secrets.GIT_USER }}"
-          git config --global user.email "${{ secrets.EMAIL }}"
-          git add pom.xml
-          git commit -m "Bump version [skip ci]"
-          git push
-        working-directory: ./myapp
-
-
-
-     
+          
+          # Push the Docker image with version tag and latest tag
+          docker push kupidun/java-app:$VERSION
+          docker tag kupidun/java-app:$VERSION kupidun/java-app:latest
+          docker push kupidun/java-app:latest
