@@ -20,7 +20,6 @@ jobs:
           docker build -t kupidun/java-app:${VERSION} --build-arg VERSION=${VERSION} .
           echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
           docker image tag kupidun/java-app:$VERSION kupidun/java-app:latest
-          docker image tag kupidun/java-app:$VERSION kupidun/java-app:$VERSION
           docker image push kupidun/java-app:$VERSION
           docker image push kupidun/java-app:latest
         working-directory: ./myapp
@@ -39,15 +38,7 @@ jobs:
           git commit -m "Bump version [skip ci]"
           git push
         working-directory: ./myapp
-        if: github.ref == 'refs/heads/master'
 
 
 
-      - name: Run Docker Container for Testing
-        run: |
-          docker pull kupidun/java-app:latest
-          CONTAINER_ID=$(docker run --name test_container -d -p 8080:8080 kupidun/java-app:latest)
-          sleep 10 # Give some time for the application to start
-          docker logs $CONTAINER_ID
-          docker stop $CONTAINER_ID
-          docker rm $CONTAINER_ID
+     
