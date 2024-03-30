@@ -15,7 +15,7 @@ jobs:
         run: |
           # Extract version information from pom.xml
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          
+          echo "$VERSION"
           # Build Docker image with tag based on Maven project version
           docker build -t kupidun/java-app:$VERSION .
           
