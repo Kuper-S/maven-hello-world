@@ -25,7 +25,7 @@ jobs:
         run: |
           gg-shield scan
         env:
-          GG_API_KEY: ${{ secrets.GG_API_KEY }}
+          GITGUARDIAN_PAT: ${{ secrets.GITGUARDIAN_PAT }}
 
       # Step to install and configure client-side Git hooks for secret scanning
       - name: Install and Configure GitGuardian Git Hooks
