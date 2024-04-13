@@ -12,13 +12,31 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
+      # Step to perform secret scanning within Git using GitGuardian
+      - name: Secret Scanning with GitGuardian
+        run: |
+          # Install GitGuardian CLI
+          curl -L https://github.com/GitGuardian/gg-shield/releases/latest/download/install.sh | bash
+          # Run GitGuardian scan
+          gg-shield scan
+        env:
+          GG_API_KEY: ${{ secrets.GG_API_KEY }}
 
+      # Step to install and configure client-side Git hooks for secret scanning
+      - name: Install and Configure GitGuardian Git Hooks
+        run: |
+          # Install GitGuardian's pre-commit hook
+          gg-shield hook install --git
+        env:
+          GG_API_KEY: ${{ secrets.GG_API_KEY }}
+
+      # Your existing steps for building and deploying Docker images
       - name: Build and Push Docker Image
         run: |
-          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceSt>
           echo "${VERSION}"
-          docker build -t kupidun/java-app:${VERSION} --build-arg VERSION=${VERSION} .
-          echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+          docker build -t kupidun/java-app:${VERSION} --build-arg VERSION=${VER>
+          echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secre>
           docker image tag kupidun/java-app:$VERSION kupidun/java-app:latest
           docker image push kupidun/java-app:$VERSION
           docker image push kupidun/java-app:latest
@@ -26,7 +44,7 @@ jobs:
         env:
           NEW_VERSION: ${{ env.NEW_VERSION }}
 
-
+      # Your existing steps for incrementing version and committing changes
       - name: Increment Patch Version and Commit
         run: |
           chmod +x versionScript.sh
@@ -39,6 +57,3 @@ jobs:
           git push
         working-directory: ./myapp
 
-
-
-     
