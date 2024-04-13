@@ -23,18 +23,17 @@ jobs:
 
      # Step to perform secret scanning within Git using GitGuardian
       - name: Secret Scanning with GitGuardian
-        shell: /bin/bash
         run: |
           ls -l
-          export PATH="$PATH:/usr/local/bin"
-          gg-shield scan
+          export PATH="$PATH:/home/runner/work/_temp/_github_home/bin"
+          ./gg-shield scan
         env:
           GITGUARDIAN_PAT: ${{ secrets.GITGUARDIAN_PAT }}
 
       # Step to install and configure client-side Git hooks for secret scanning
       - name: Install and Configure GitGuardian Git Hooks
         run: |
-          gg-shield hook install --git
+          ./gg-shield hook install --git
         env:
           GITGUARDIAN_PAT: ${{ secrets.GITGUARDIAN_PAT }}
 
