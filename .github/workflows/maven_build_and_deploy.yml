@@ -33,10 +33,10 @@ jobs:
       # Your existing steps for building and deploying Docker images
       - name: Build and Push Docker Image
         run: |
-          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceSt>
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "${VERSION}"
-          docker build -t kupidun/java-app:${VERSION} --build-arg VERSION=${VER>
-          echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secre>
+          docker build -t kupidun/java-app:${VERSION} --build-arg VERSION=${VERSION} .
+          echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
           docker image tag kupidun/java-app:$VERSION kupidun/java-app:latest
           docker image push kupidun/java-app:$VERSION
           docker image push kupidun/java-app:latest
@@ -56,4 +56,3 @@ jobs:
           git commit -m "Bump version [skip ci]"
           git push
         working-directory: ./myapp
-
