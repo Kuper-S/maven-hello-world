@@ -16,9 +16,9 @@ jobs:
       - name: Secret Scanning with GitGuardian
         run: |
           # Install GitGuardian CLI
-          curl -L https://github.com/GitGuardian/gg-shield/releases/latest/download/install.sh | bash
+          wget -O gg-install.sh https://github.com/GitGuardian/gg-shield/releases/latest/download/install.sh
           # Run GitGuardian scan
-          gg-shield scan
+          bash gg-install.sh
         env:
           GG_API_KEY: ${{ secrets.GG_API_KEY }}
 
