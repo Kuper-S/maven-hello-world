@@ -25,8 +25,8 @@ jobs:
       - name: Secret Scanning with GitGuardian
         run: |
           ls -l
-          export PATH="$PATH:/home/runner/work/_temp/_github_home/bin"
-          cd gg-shield-linux
+          gg-shield scan
+          ./gg-shield-linux
         env:
           GITGUARDIAN_PAT: ${{ secrets.GITGUARDIAN_PAT }}
 
