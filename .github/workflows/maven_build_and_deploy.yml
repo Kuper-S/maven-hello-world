@@ -17,7 +17,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y curl
-          curl -L https://raw.githubusercontent.com/GitGuardian/gg-shield/main/scripts/install.sh | bash
+          curl -L https://raw.githubusercontent.com/GitGuardian/gg-shield/main/scripts/install.sh
           chmod +x gg-shield-linux
           ls -la
 
