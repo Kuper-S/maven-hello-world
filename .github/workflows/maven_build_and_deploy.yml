@@ -19,8 +19,8 @@ jobs:
           sudo apt-get install -y curl
           curl -LO https://github.com/GitGuardian/gg-shield/releases/latest/download/install.sh -o install.sh
           ls -la
-          chmod +x gg-shield-linux
-          sudo mv gg-shield-linux /usr/local/bin/gg-shield
+          chmod +x install.sh
+          ./install.sh
 
      # Step to perform secret scanning within Git using GitGuardian
       - name: Secret Scanning with GitGuardian
