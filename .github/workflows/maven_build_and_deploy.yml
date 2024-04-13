@@ -25,7 +25,7 @@ jobs:
      # Step to perform secret scanning within Git using GitGuardian
       - name: Secret Scanning with GitGuardian
         run: |
-          cd /usr/local/bin/gg-shield
+          cd /usr/local/bin
           gg-shield scan
         env:
           GITGUARDIAN_PAT: ${{ secrets.GITGUARDIAN_PAT }}
