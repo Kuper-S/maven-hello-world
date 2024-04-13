@@ -19,6 +19,8 @@ jobs:
           sudo apt-get install -y curl
           curl -L https://github.com/GitGuardian/gg-shield/releases/latest/download/install.sh -o install.sh
           chmod +x install.sh
+          ls -l install.sh
+          cat install.sh
           sudo bash install.sh
 
       # Step to perform secret scanning within Git using GitGuardian
