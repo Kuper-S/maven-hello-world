@@ -26,7 +26,7 @@ jobs:
         run: |
           ls -l
           export PATH="$PATH:/home/runner/work/_temp/_github_home/bin"
-          ./gg-shield-linux scan
+          cd gg-shield-linux
         env:
           GITGUARDIAN_PAT: ${{ secrets.GITGUARDIAN_PAT }}
 
