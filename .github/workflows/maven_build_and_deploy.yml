@@ -19,12 +19,13 @@ jobs:
           sudo apt-get install -y curl
           curl -LO https://github.com/GitGuardian/gg-shield/releases/latest/download/gg-shield-linux
           chmod +x gg-shield-linux
-          #sudo mv gg-shield-linux /usr/local/bin/gg-shield
-          #ls -l /usr/local/bin/gg-shield
+          ls -la
+
      # Step to perform secret scanning within Git using GitGuardian
       - name: Secret Scanning with GitGuardian
         run: |
           ls -l
+          export PATH="$PATH:/usr/local/bin"
           gg-shield scan
         env:
           GITGUARDIAN_PAT: ${{ secrets.GITGUARDIAN_PAT }}
