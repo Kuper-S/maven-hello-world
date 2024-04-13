@@ -32,7 +32,8 @@ jobs:
         run: |
           gg-shield hook install --git
         env:
-          GG_API_KEY: ${{ secrets.GG_API_KEY }}
+          GITGUARDIAN_PAT: ${{ secrets.GITGUARDIAN_PAT }}
+
 
       # Your existing steps for building and deploying Docker images
       - name: Build and Push Docker Image
