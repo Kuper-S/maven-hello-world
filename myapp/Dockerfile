@@ -2,7 +2,6 @@
 FROM maven:3.6.3-openjdk-11 as builder
 
 ARG IMAGE_TAG=latest
-ADD cli/target/dependency-check-${IMAGE_TAG}-release.zip /
 
 
 #setting the working dir
