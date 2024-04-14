@@ -42,7 +42,7 @@ jobs:
 
       - name: Run OWASP Dependency Check
         run: mvn org.owasp:dependency-check-maven:check -X
-
+        working-directory: ./myapp/
       - name: Archive Vulnerability Reports
         uses: actions/upload-artifact@v2
         with:
