@@ -2,6 +2,9 @@
 FROM maven:3.6.3-openjdk-11 as builder
 
 ARG IMAGE_TAG=latest
+ADD cli/target/dependency-check-${IMAGE_TAG}-release.zip /
+
+
 #setting the working dir
 WORKDIR /app
 
@@ -24,6 +27,8 @@ COPY --from=builder /app/target/*.jar app.jar
 
 # Use the non-root user to run the application
 USER appuser
+
+
 
 # Command to run the application
 CMD ["java", "-jar", "app.jar"]
