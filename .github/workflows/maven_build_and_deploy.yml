@@ -24,7 +24,7 @@ jobs:
           docker run --rm -v $(pwd):/wd -w /wd zricethezav/gitleaks protect --verbose --redact --staged
 
       - name: Run OWASP Dependency-Check
-        uses: jeremylong/DependencyCheck@v1
+        uses: jeremylong/DependencyCheck@main
         with:
           path: "."
           format: 'HTML'
