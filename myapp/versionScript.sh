@@ -12,7 +12,7 @@ increment_version() {
     local major=${parts[0]}
     local minor=${parts[1]}
     local patch=${parts[2]}
-    # update patch number only 
+    # update patch number only
     new_patch=$((patch + 1))
     echo "$major.$minor.$new_patch"
 }

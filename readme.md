@@ -3,7 +3,7 @@
 
 
 
-# Description 
+# Description
 This repository contains the source code of a simple Java application, along with a GitHub Actions workflow that automates the process of building, testing
 Organization. Ansible Roles provide a structured way to organize tasks, templates, files, and variables. This structure makes it easier to manage complex automation setups, as everything related to a specific role is contained within its directory, packaging, and Publishing this application image.
 This is an overview of this CI/CD pipeline, including the technologies used, GitHub secrets configuration, and a breakdown of each step in the pipeline.
@@ -18,7 +18,7 @@ This is an overview of this CI/CD pipeline, including the technologies used, Git
 - Git installed on your local machine.
 
 
-# Technologies Used 
+# Technologies Used
 Java: We use Java 1.8 to compile the application.
 Maven: For build and dependency management tool for this Project and Maven Plugins.
 Docker: For containerizing the application, ensuring consistent environments across the runners, and for image creation.
@@ -41,7 +41,7 @@ EMAIL: Your email is associated with the git user for commit operations.
 Workflow File Location: .github/workflows/build_and_deploy.yml
 Trigger: The pipeline is triggered on every push to the master branch, you can change your trigger if needed.
 
-# Workflow Pipeline Steps Explained 
+# Workflow Pipeline Steps Explained
 Environment: The job runs on the latest Ubuntu runner (ubuntu-latest) provided by GitHub Actions. This ensures that we have a consistent and up-to-date environment for this pipeline execution.
 
 Steps:
@@ -56,5 +56,3 @@ Steps:
 - Push Docker Image Stage: Pushes the built image to Docker Hub twice the latest + version number.
 - Pull Docker Image Stage: Pulls the image for testing.
 - Run Docker Container for Testing Stage: Tests the running container to ensure the app is running on the container.
-
-

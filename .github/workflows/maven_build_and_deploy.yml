@@ -8,41 +8,36 @@ on:
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
-    steps:
+    services:
+      docker:
+        image: docker:stable-dind
+        options: --privileged
+      steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      # Step to install GitGuardian CLI
-      - name: Install GitGuardian CLI
+      - name: Scan for Hardcoded Secrets Gitleaks
         run: |
-          sudo apt-get update
-          sudo apt-get install -y curl
-          curl -L https://raw.githubusercontent.com/GitGuardian/gg-shield/main/scripts/install.sh
-          chmod +x gg-shield-linux
-          ls -la
+          docker run --rm -v $(pwd):/wd -w /wd zricethezav/gitleaks protect --verbose --redact --staged
 
-     # Step to perform secret scanning within Git using GitGuardian
-      - name: Secret Scanning with GitGuardian
-        run: |
-          ls -l
-          gg-shield scan
-          ./gg-shield-linux
-        env:
-          GITGUARDIAN_PAT: ${{ secrets.GITGUARDIAN_PAT }}
+      - name: Run OWASP Dependency-Check
+        uses: jeremylong/DependencyCheck@v1
+        with:
+          path: "."
+          format: 'HTML'
 
-      # Step to install and configure client-side Git hooks for secret scanning
-      - name: Install and Configure GitGuardian Git Hooks
-        run: |
-          ./gg-shield hook install --git
-        env:
-          GITGUARDIAN_PAT: ${{ secrets.GITGUARDIAN_PAT }}
+      - name: Archive vulnerability report
+        uses: actions/upload-artifact@v2
+        with:
+          name: owasp-dependency-check-report
+          path: '**/dependency-check-report.html'
 
-
-      # Your existing steps for building and deploying Docker images
       - name: Build and Push Docker Image
         run: |
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          echo "${VERSION}"
           docker build -t kupidun/java-app:${VERSION} --build-arg VERSION=${VERSION} .
           echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
           docker image tag kupidun/java-app:$VERSION kupidun/java-app:latest
@@ -52,7 +47,7 @@ jobs:
         env:
           NEW_VERSION: ${{ env.NEW_VERSION }}
 
-      # Your existing steps for incrementing version and committing changes
+
       - name: Increment Patch Version and Commit
         run: |
           chmod +x versionScript.sh

@@ -2,7 +2,7 @@
 FROM maven:3.6.3-openjdk-11 as builder
 
 ARG IMAGE_TAG=latest
-#setting the working dir 
+#setting the working dir
 WORKDIR /app
 
 # Copy the pom.xml and source code
