@@ -36,6 +36,10 @@ jobs:
           distribution: 'temurin'
           maven-version: '3.8.4'
 
+
+      - name: List files in the repository
+        run: ls -la
+
       - name: Run OWASP Dependency Check
         run: mvn org.owasp:dependency-check-maven:check -X
 
