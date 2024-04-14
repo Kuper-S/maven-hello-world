@@ -35,7 +35,22 @@ jobs:
           name: owasp-dependency-check-report
           path: '**/dependency-check-report.html'
 
+
+      - name: Install Trivy
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y apt-transport-https gnupg lsb-release
+          echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
+          wget -qO - https://aquasecurity.github.io/trivy-repo/key.asc | sudo apt-key add -
+          sudo apt-get update
+          sudo apt-get install trivy
+
+      - name: Trivy Scan Dockerfile
+        run: |
+          trivy config --exit-code 1 --severity HIGH,CRITICAL .
+
       - name: Build and Push Docker Image
+        if: success()
         run: |
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           docker build -t kupidun/java-app:${VERSION} --build-arg VERSION=${VERSION} .
