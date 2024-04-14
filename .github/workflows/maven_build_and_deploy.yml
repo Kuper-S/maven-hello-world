@@ -23,18 +23,27 @@ jobs:
         run: |
           docker run --rm -v $(pwd):/wd -w /wd zricethezav/gitleaks protect --verbose --redact --staged
 
-      - name: Run OWASP Dependency-Check
-        uses: jeremylong/DependencyCheck@main
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
         with:
-          path: "."
-          format: 'HTML'
+          java-version: '11'
+          distribution: 'temurin'
 
-      - name: Archive vulnerability report
+      - name: Set up Maven
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          maven-version: '3.8.4'
+
+      - name: Run OWASP Dependency Check
+        run: mvn org.owasp:dependency-check-maven:check
+
+      - name: Archive Vulnerability Reports
         uses: actions/upload-artifact@v2
         with:
-          name: owasp-dependency-check-report
-          path: '**/dependency-check-report.html'
-
+          name: OWASP Dependency Check Report
+          path: '**/target/dependency-check-report.*'
 
       - name: Install Trivy
         run: |
