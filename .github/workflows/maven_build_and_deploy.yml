@@ -37,7 +37,8 @@ jobs:
           maven-version: '3.8.4'
 
       - name: Run OWASP Dependency Check
-        run: mvn org.owasp:dependency-check-maven:check
+        run: mvn org.owasp:dependency-check-maven:check -X
+        working-directory: ./path/to/maven/project
 
       - name: Archive Vulnerability Reports
         uses: actions/upload-artifact@v2
