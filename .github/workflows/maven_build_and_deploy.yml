@@ -59,8 +59,7 @@ jobs:
           KEY: ${{ secrets.COSIGN_PUBLIC_KEY }}
 
       - name: Write public signing key to disk
-        run: |
-          'echo "$PUB" > cosign.pub'
+        run: 'echo "$PUB" > cosign.pub'
         shell: bash
         env:
            PUB: ${{ secrets.COSIGN_PUBLIC_KEY }}
