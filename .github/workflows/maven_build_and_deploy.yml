@@ -26,12 +26,9 @@ jobs:
       - name: List files in the repository
         run: ls -la
 
-      - name: Change directory to Maven project
-        run: cd myapp
-
       - name: Dependency Check
         run: |
-          mvn org.owasp:dependency-check-maven:check
+          cd myapp && mvn org.owasp:dependency-check-maven:check
 
       - name: Scan Dockerfile for Vulnerabilities
         run: |
