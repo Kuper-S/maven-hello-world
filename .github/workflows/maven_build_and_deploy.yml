@@ -25,12 +25,19 @@ jobs:
 
       - name: Dependency Check
         run: |
-          #cd myapp && mvn org.owasp:dependency-check-maven:check -Ddependency-check.skipNvd=true -Ddependency-check.skipCentral=true
           cd myapp && mvn spotbugs:check
 
       - name: Scan Dockerfile for Vulnerabilities
         run: |
           cd myapp && docker run --rm -i hadolint/hadolint < Dockerfile
+
+      - name: Run Codacy Analysis CLI
+        uses: codacy/codacy-analysis-cli-action@master
+        with:
+          output: results.sarif
+          format: sarif
+          gh-code-scanning-compat: true
+          max-allowed-issues: 2147483647
 
       - name: Build and Push Docker Image
         if: success() && github.event_name == 'push' && github.ref == 'refs/heads/master'
