@@ -64,7 +64,7 @@ jobs:
           'echo "$PUB" > pub.key'
         shell: bash
         env:
-           PUB: ${{ secrets.COSIGN_PRIVATE_KEY }}
+           PUB: ${{ secrets.COSIGN_PUBLIC_KEY }}
 
 
       - name: Sign the published Docker image
