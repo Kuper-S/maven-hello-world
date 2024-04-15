@@ -84,5 +84,5 @@ jobs:
 
       - name: Verify image
         run: |
-          cosign verify --key cosign.key kupidun/java-app:$VERSION
-          cosign verify --key cosign.key kupidun/java-app:latest
+          cosign verify --key cosign.pub kupidun/java-app:$VERSION
+          cosign verify --key cosign.pub kupidun/java-app:latest
