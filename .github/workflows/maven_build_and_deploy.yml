@@ -34,7 +34,7 @@ jobs:
       - name: Run Codacy Analysis CLI
         uses: codacy/codacy-analysis-cli-action@master
         with:
-          directory: myapp/src
+          directory: myapp
           verbose: true
           output: results.sarif
           format: sarif
