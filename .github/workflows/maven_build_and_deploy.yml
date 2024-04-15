@@ -61,7 +61,7 @@ jobs:
 
       - name: Write public signing key to disk
         run: |
-          'echo "$PUB" > pub.key'
+          'echo "$PUB" > cosign.pub'
         shell: bash
         env:
            PUB: ${{ secrets.COSIGN_PUBLIC_KEY }}
@@ -76,5 +76,5 @@ jobs:
 
       - name: Verify image
         run: |
-          cosign verify --key pub.key kupidun/java-app:$VERSION
-          cosign verify --key pub.key kupidun/java-app:latest
+          cosign verify --key cosign.pub kupidun/java-app:$VERSION
+          cosign verify --key cosign.pub kupidun/java-app:latest
