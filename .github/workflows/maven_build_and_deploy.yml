@@ -28,7 +28,8 @@ jobs:
 
       - name: Dependency Check
         run: |
-          cd myapp && mvn org.owasp:dependency-check-maven:check -Ddependency-check.skipNvd=true -Ddependency-check.skipCentral=true
+          #cd myapp && mvn org.owasp:dependency-check-maven:check -Ddependency-check.skipNvd=true -Ddependency-check.skipCentral=true
+          cd myapp && mvn spotbugs:check
 
       - name: Scan Dockerfile for Vulnerabilities
         run: |
