@@ -32,8 +32,8 @@ jobs:
 
       - name: Scan Dockerfile for Vulnerabilities
         run: |
+          cd myapp
           docker run --rm -i hadolint/hadolint < Dockerfile
-        working-directory: ./myapp
 
       - name: Build and Push Docker Image
         if: success() && github.event_name == 'push' && github.ref == 'refs/heads/master'
