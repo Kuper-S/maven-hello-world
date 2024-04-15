@@ -23,47 +23,19 @@ jobs:
         run: |
           docker run --rm -v $(pwd):/wd -w /wd zricethezav/gitleaks protect --verbose --redact --staged
 
-      - name: Set up JDK 11
-        uses: actions/setup-java@v2
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-
-      - name: Set up Maven
-        uses: actions/setup-java@v2
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-          maven-version: '3.8.4'
-
-
       - name: List files in the repository
         run: ls -la
 
-      - name: Run OWASP Dependency Check
-        run: mvn org.owasp:dependency-check-maven:check -X
-        working-directory: ./myapp/
-      - name: Archive Vulnerability Reports
-        uses: actions/upload-artifact@v2
-        with:
-          name: OWASP Dependency Check Report
-          path: '**/target/dependency-check-report.*'
-
-      - name: Install Trivy
+      - name: Dependency Check
         run: |
-          sudo apt-get update
-          sudo apt-get install -y apt-transport-https gnupg lsb-release
-          echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
-          wget -qO - https://aquasecurity.github.io/trivy-repo/key.asc | sudo apt-key add -
-          sudo apt-get update
-          sudo apt-get install trivy
+          mvn org.owasp:dependency-check-maven:check
 
-      - name: Trivy Scan Dockerfile
+      - name: Scan Dockerfile for Vulnerabilities
         run: |
-          trivy config --exit-code 1 --severity HIGH,CRITICAL .
+          docker run --rm -i hadolint/hadolint < Dockerfile
 
       - name: Build and Push Docker Image
-        if: success()
+        if: success() && github.event_name == 'push' && github.ref == 'refs/heads/master'
         run: |
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           docker build -t kupidun/java-app:${VERSION} --build-arg VERSION=${VERSION} .
