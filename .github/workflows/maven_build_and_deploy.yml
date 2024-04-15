@@ -23,9 +23,6 @@ jobs:
         run: |
           docker run --rm -v $(pwd):/wd -w /wd zricethezav/gitleaks protect --verbose --redact --staged
 
-      - name: List files in the repository
-        run: ls -la
-
       - name: Dependency Check
         run: |
           #cd myapp && mvn org.owasp:dependency-check-maven:check -Ddependency-check.skipNvd=true -Ddependency-check.skipCentral=true
