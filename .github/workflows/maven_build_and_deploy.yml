@@ -53,10 +53,13 @@ jobs:
         uses: sigstore/cosign-installer@v3.5.0
 
       - name: Write signing key to disk
-        run: 'echo "$KEY" > cosign.key'
+        run: |
+          'echo "$KEY" > cosign.key'
+          'echo "$PUB" > pub.key'
         shell: bash
         env:
            KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+           PUB: ${{ secrets.COSIGN_PRIVATE_KEY }}
 
       - name: Sign the published Docker image
         env:
@@ -67,5 +70,5 @@ jobs:
 
       - name: Verify image
         run: |
-          cosign verify --key cosign.pub kupidun/java-app:$VERSION
-          cosign verify --key cosign.pub kupidun/java-app:latest
+          cosign verify --key pub.key kupidun/java-app:$VERSION
+          cosign verify --key pub.key kupidun/java-app:latest
